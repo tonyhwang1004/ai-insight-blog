@@ -1,0 +1,25 @@
+name: 🤖 Simple Blog Auto Posting
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-blog-post:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: Run blog script
+      run: |
+        cd scripts
+        python auto_blogger.py
+    - name: Commit changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "Blog Bot"
+        git add .
+        git diff --staged --quiet || (git commit -m "🤖 New blog post" && git push)
