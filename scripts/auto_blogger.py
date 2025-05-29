@@ -1,367 +1,247 @@
-# =====================================================
-# 1. scripts/auto_blogger.py (메인 자동화 스크립트)
-# =====================================================
+#!/usr/bin/env python3
+"""
+🤖 AI 자동 블로그 포스팅 시스템
+매일 자동으로 AI 관련 고품질 블로그 포스트를 생성합니다.
+GitHub Pages Jekyll 블로그 완벽 지원
+"""
 
 import os
 import json
-import requests
-from datetime import datetime, timedelta
-from pathlib import Path
 import random
-import re
+from datetime import datetime, timedelta
+from openai import OpenAI
+import subprocess
+import sys
 
-class AIBlogger:
+class AutoBlogger:
     def __init__(self):
-        self.api_key = os.getenv('OPENAI_API_KEY')
-        self.base_url = "https://api.openai.com/v1/chat/completions"
-        self.blog_topics = [
+        """초기화 및 OpenAI 클라이언트 설정"""
+        self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        self.posts_dir = "_posts"
+        self.ensure_posts_directory()
+        
+        # AI 관련 주제 목록
+        self.topics = [
             "ChatGPT 활용법",
-            "머신러닝 트렌드",
-            "딥러닝 기초",
-            "AI 도구 리뷰",
-            "생성형 AI",
-            "AI 윤리",
-            "자연어처리",
+            "머신러닝 기초",
+            "딥러닝 트렌드",
+            "AI 도구 소개",
+            "프롬프트 엔지니어링",
+            "AI 윤리와 미래",
+            "자연어처리 기술",
             "컴퓨터 비전",
-            "AI 스타트업",
-            "AI와 미래직업"
-        ]
-        self.categories = [
-            "ChatGPT",
-            "머신러닝", 
-            "딥러닝",
-            "AI 도구",
-            "AI 트렌드",
-            "AI 윤리"
+            "AI 프로그래밍 튜토리얼",
+            "생성형 AI 활용",
+            "AI 비즈니스 적용사례",
+            "오픈소스 AI 도구"
         ]
         
+        # 카테고리 매핑
+        self.category_mapping = {
+            "ChatGPT": ["ChatGPT 활용법", "프롬프트 엔지니어링", "생성형 AI 활용"],
+            "Machine Learning": ["머신러닝 기초", "딥러닝 트렌드", "자연어처리 기술", "컴퓨터 비전"],
+            "AI Tools": ["AI 도구 소개", "오픈소스 AI 도구"],
+            "Programming": ["AI 프로그래밍 튜토리얼"],
+            "Business": ["AI 비즈니스 적용사례"],
+            "Ethics": ["AI 윤리와 미래"]
+        }
+
+    def ensure_posts_directory(self):
+        """포스트 디렉토리 확인 및 생성"""
+        if not os.path.exists(self.posts_dir):
+            os.makedirs(self.posts_dir)
+            print(f"✅ {self.posts_dir} 디렉토리를 생성했습니다.")
+
+    def get_category_for_topic(self, topic):
+        """주제에 따른 카테고리 결정"""
+        for category, topics in self.category_mapping.items():
+            if topic in topics:
+                return category
+        return "AI General"
+
     def generate_blog_post(self):
-        """OpenAI API를 사용해 블로그 포스트 생성"""
-        topic = random.choice(self.blog_topics)
-        category = random.choice(self.categories)
+        """GPT-4를 사용하여 블로그 포스트 생성"""
+        topic = random.choice(self.topics)
+        category = self.get_category_for_topic(topic)
         
+        print(f"🤖 주제: {topic}")
+        print(f"📂 카테고리: {category}")
+        
+        # GPT-4 프롬프트
         prompt = f"""
-        다음 주제에 대해 전문적이고 유익한 블로그 글을 작성해주세요:
-        
+        다음 주제로 전문적이고 실용적인 블로그 포스트를 한국어로 작성해주세요:
+
         주제: {topic}
-        카테고리: {category}
         
         요구사항:
-        1. 제목은 SEO에 최적화되고 클릭을 유도하는 매력적인 제목
-        2. 최소 800단어 이상의 상세한 내용
-        3. 실용적인 정보와 구체적인 예시 포함
-        4. 초보자도 이해할 수 있도록 쉬운 설명
-        5. 단락별로 소제목 사용
-        6. 마지막에 핵심 포인트 요약
+        1. 800-1200단어 분량
+        2. 초보자도 이해할 수 있도록 친근하게 설명
+        3. 구체적인 예시와 실습 내용 포함
+        4. 마크다운 형식으로 작성
+        5. 코드 예제가 필요한 경우 포함
+        6. 실용적이고 바로 적용 가능한 내용
         
-        형식:
-        - 제목만 따로 첫 줄에
-        - 본문은 마크다운 형식으로
-        - 코드 예시가 있다면 ```python 코드블록 사용
+        구조:
+        - 흥미로운 도입부
+        - 주요 개념 설명
+        - 실제 사용 예시
+        - 단계별 가이드
+        - 팁과 주의사항
+        - 마무리 및 다음 단계 제안
+        
+        블로그 포스트 제목과 내용을 생성해주세요.
         """
         
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
-        
-        data = {
-            "model": "gpt-4",
-            "messages": [
-                {
-                    "role": "system", 
-                    "content": "당신은 AI 전문 블로거입니다. 최신 AI 기술에 대해 전문적이면서도 이해하기 쉬운 글을 작성합니다."
-                },
-                {
-                    "role": "user", 
-                    "content": prompt
-                }
-            ],
-            "max_tokens": 2500,
-            "temperature": 0.7
-        }
-        
         try:
-            response = requests.post(self.base_url, headers=headers, json=data)
-            response.raise_for_status()
+            print("🔄 GPT-4로 콘텐츠를 생성 중...")
+            response = self.client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "당신은 AI와 기술에 특화된 전문 블로거입니다. 복잡한 기술을 쉽고 재미있게 설명하는 것이 특기입니다."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=2000,
+                temperature=0.7
+            )
             
-            result = response.json()
-            content = result['choices'][0]['message']['content']
+            content = response.choices[0].message.content
             
-            # 제목과 본문 분리
-            lines = content.strip().split('\n')
-            title = lines[0].strip('#').strip()
-            body = '\n'.join(lines[1:]).strip()
+            # 제목 추출 (첫 번째 # 헤더)
+            lines = content.split('\n')
+            title = "AI 인사이트 블로그"
+            for line in lines:
+                if line.startswith('# '):
+                    title = line.replace('# ', '').strip()
+                    break
             
             return {
                 'title': title,
-                'body': body,
-                'category': category,
-                'topic': topic
+                'content': content,
+                'topic': topic,
+                'category': category
             }
             
         except Exception as e:
-            print(f"API 호출 실패: {e}")
-            return self.generate_fallback_post()
-    
-    def generate_fallback_post(self):
-        """API 실패시 대체 포스트 생성"""
-        fallback_posts = [
-            {
-                'title': 'AI 시대의 새로운 기회: 개발자를 위한 5가지 준비사항',
-                'body': '''
-# AI 시대의 새로운 기회
+            print(f"❌ OpenAI API 오류: {e}")
+            return None
 
-## 들어가며
-인공지능 기술이 급속도로 발전하면서 개발자들에게 새로운 기회와 도전이 동시에 찾아오고 있습니다.
-
-## 1. 머신러닝 기초 학습
-파이썬과 TensorFlow, PyTorch 같은 프레임워크에 익숙해지는 것이 중요합니다.
-
-## 2. 데이터 처리 능력
-AI의 핵심은 데이터입니다. 데이터 전처리와 분석 능력을 기르세요.
-
-## 3. API 활용 능력
-OpenAI, Google AI 등의 API를 활용하는 방법을 익히세요.
-
-## 4. 윤리적 사고
-AI 개발시 윤리적 고려사항을 항상 염두에 두어야 합니다.
-
-## 5. 지속적인 학습
-AI 분야는 빠르게 변화하므로 지속적인 학습이 필수입니다.
-
-## 마무리
-AI 시대에 뒤처지지 않으려면 지금부터 차근차근 준비해나가시기 바랍니다.
-                ''',
-                'category': 'AI 트렌드',
-                'topic': 'AI 개발자 준비사항'
-            }
-        ]
-        return random.choice(fallback_posts)
-    
-    def create_blog_post_file(self, post_data):
-        """마크다운 블로그 포스트 파일 생성"""
+    def create_post_file(self, post_data):
+        """Jekyll 형식의 마크다운 파일 생성"""
+        if not post_data:
+            return None
+            
         now = datetime.now()
         date_str = now.strftime("%Y-%m-%d")
         time_str = now.strftime("%H:%M:%S")
         
-        # 파일명 생성 (제목을 영문으로 변환)
-        filename = f"{date_str}-{self.title_to_filename(post_data['title'])}.md"
+        # 파일명 생성 (한글 제목을 영문으로 변환)
+        safe_title = self.make_safe_filename(post_data['title'])
+        filename = f"{date_str}-{safe_title}.md"
+        filepath = os.path.join(self.posts_dir, filename)
         
-        # 프론트매터 생성
+        # Jekyll Front Matter 생성
         front_matter = f"""---
 layout: post
 title: "{post_data['title']}"
 date: {date_str} {time_str} +0900
 categories: [{post_data['category']}]
-tags: [AI, {post_data['category']}, {post_data['topic']}]
-author: "AI Insight"
-description: "{post_data['title']} - AI 인사이트 블로그에서 제공하는 전문 분석"
-image: "/assets/images/ai-blog-{date_str}.jpg"
+tags: [AI, {post_data['topic']}, 인공지능, 기술]
+author: "AI Insight Blog"
+description: "{post_data['title']} - 실용적인 AI 가이드와 최신 트렌드 소개"
 ---
 
-{post_data['body']}
-
----
-
-## 🤖 AI 인사이트 더 보기
-
-- [최신 AI 뉴스](/)
-- [ChatGPT 활용법](/category/chatgpt)
-- [머신러닝 가이드](/category/machine-learning)
-
-### 📬 뉴스레터 구독
-
-최신 AI 소식을 이메일로 받아보세요!
-
-[구독하기](/newsletter)
-
----
-
-*이 글이 도움이 되셨다면 공유해주세요! 🚀*
 """
         
-        # posts 디렉토리 생성
-        posts_dir = Path("posts")
-        posts_dir.mkdir(exist_ok=True)
+        # 전체 콘텐츠 결합
+        full_content = front_matter + post_data['content']
         
         # 파일 저장
-        file_path = posts_dir / filename
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(front_matter)
+        try:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(full_content)
+            print(f"✅ 포스트 파일 생성: {filename}")
+            return filepath
+        except Exception as e:
+            print(f"❌ 파일 저장 오류: {e}")
+            return None
+
+    def make_safe_filename(self, title):
+        """파일명으로 사용 가능한 안전한 문자열 생성"""
+        # 한글과 특수문자를 영문으로 변환
+        safe_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"
+        safe_title = ""
         
-        print(f"새 포스트 생성: {filename}")
-        return filename
-    
-    def title_to_filename(self, title):
-        """제목을 파일명으로 변환"""
-        # 한글을 영문으로 매핑 (간단한 예시)
-        korean_to_english = {
-            'ChatGPT': 'chatgpt',
-            '인공지능': 'artificial-intelligence',
-            '머신러닝': 'machine-learning',
-            '딥러닝': 'deep-learning',
-            'AI': 'ai',
-            '가이드': 'guide',
-            '방법': 'methods',
-            '활용': 'utilization',
-            '분석': 'analysis',
-            '트렌드': 'trends'
-        }
+        for char in title:
+            if char in safe_chars:
+                safe_title += char
+            elif char == ' ':
+                safe_title += '-'
         
-        filename = title.lower()
-        for korean, english in korean_to_english.items():
-            filename = filename.replace(korean.lower(), english)
-        
-        # 특수문자 제거 및 공백을 하이픈으로
-        filename = re.sub(r'[^\w\s-]', '', filename)
-        filename = re.sub(r'[\s_]+', '-', filename)
-        filename = filename.strip('-')
-        
-        return filename[:50]  # 파일명 길이 제한
-    
-    def update_index_html(self):
-        """index.html에 새 포스트 추가"""
-        # 이 부분은 실제 구현시 HTML 파싱과 업데이트가 필요
-        print("index.html 업데이트 완료")
-    
+        # 연속된 하이픈 제거 및 길이 제한
+        safe_title = '-'.join(filter(None, safe_title.split('-')))
+        return safe_title[:50] if len(safe_title) > 50 else safe_title
+
+    def git_commit_and_push(self, filepath):
+        """Git 커밋 및 푸시"""
+        try:
+            # Git 설정
+            subprocess.run(['git', 'config', '--global', 'user.name', 'AI Blogger Bot'], check=True)
+            subprocess.run(['git', 'config', '--global', 'user.email', 'ai-blogger@github-actions.com'], check=True)
+            
+            # 파일 추가
+            subprocess.run(['git', 'add', filepath], check=True)
+            
+            # 커밋
+            commit_message = f"🤖 Auto-post: {os.path.basename(filepath)}"
+            subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+            
+            # 푸시
+            subprocess.run(['git', 'push'], check=True)
+            
+            print("✅ Git 커밋 및 푸시 완료!")
+            return True
+            
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Git 오류: {e}")
+            return False
+        except Exception as e:
+            print(f"❌ 예상치 못한 오류: {e}")
+            return False
+
     def run(self):
         """메인 실행 함수"""
-        print("AI 블로그 자동 포스팅 시작...")
+        print("🚀 AI 자동 블로거 시작!")
+        print("=" * 50)
         
-        # 새 포스트 생성
+        # API 키 확인
+        if not os.getenv('OPENAI_API_KEY'):
+            print("❌ OPENAI_API_KEY 환경변수가 설정되지 않았습니다.")
+            sys.exit(1)
+        
+        # 블로그 포스트 생성
         post_data = self.generate_blog_post()
-        filename = self.create_blog_post_file(post_data)
+        if not post_data:
+            print("❌ 포스트 생성 실패")
+            sys.exit(1)
         
-        # 인덱스 페이지 업데이트
-        self.update_index_html()
+        # 파일 생성
+        filepath = self.create_post_file(post_data)
+        if not filepath:
+            print("❌ 파일 생성 실패")
+            sys.exit(1)
         
-        print("자동 포스팅 완료!")
-        return filename
+        # Git 커밋 및 푸시
+        success = self.git_commit_and_push(filepath)
+        if success:
+            print("🎉 자동 포스팅 완료!")
+            print(f"📝 제목: {post_data['title']}")
+            print(f"📂 카테고리: {post_data['category']}")
+            print(f"📄 파일: {os.path.basename(filepath)}")
+        else:
+            print("⚠️ 포스트는 생성되었지만 Git 푸시 실패")
+        
+        print("=" * 50)
 
 if __name__ == "__main__":
-    blogger = AIBlogger()
+    blogger = AutoBlogger()
     blogger.run()
-
-# =====================================================
-# 2. scripts/requirements.txt
-# =====================================================
-
-openai==1.3.0
-requests==2.31.0
-python-dateutil==2.8.2
-pathlib
-beautifulsoup4==4.12.2
-markdown==3.5.1
-
-# =====================================================
-# 3. .github/workflows/auto-post.yml
-# =====================================================
-
-name: 🤖 AI Blog Auto Posting
-
-on:
-  schedule:
-    # 매일 오전 9시 (한국시간) = UTC 0시
-    - cron: '0 0 * * *'
-    # 주 3회 (월,수,금) 오전 9시
-    # - cron: '0 0 * * 1,3,5'
-  
-  # 수동 실행 가능
-  workflow_dispatch:
-
-jobs:
-  auto-posting:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: 📂 Repository 체크아웃
-      uses: actions/checkout@v4
-      
-    - name: 🐍 Python 설정
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-        
-    - name: 📦 의존성 설치
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r scripts/requirements.txt
-        
-    - name: ✍️ 새 블로그 포스트 생성
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: |
-        cd scripts
-        python auto_blogger.py
-        
-    - name: 🔄 Git 설정 및 커밋
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "AI Blogger Bot"
-        git add .
-        if git diff --staged --quiet; then
-          echo "변경사항 없음"
-        else
-          git commit -m "🤖 자동 포스트 생성: $(date +'%Y-%m-%d %H:%M')"
-          git push
-        fi
-
-# =====================================================
-# 4. 추가 유틸리티 스크립트
-# =====================================================
-
-# scripts/post_manager.py
-import os
-import json
-from datetime import datetime
-from pathlib import Path
-
-class PostManager:
-    def __init__(self):
-        self.posts_dir = Path("posts")
-        self.stats_file = Path("_data/stats.json")
-        
-    def get_post_stats(self):
-        """포스트 통계 생성"""
-        posts = list(self.posts_dir.glob("*.md"))
-        
-        stats = {
-            "total_posts": len(posts),
-            "last_updated": datetime.now().isoformat(),
-            "categories": {},
-            "recent_posts": []
-        }
-        
-        # 카테고리별 통계
-        for post_file in posts:
-            with open(post_file, 'r', encoding='utf-8') as f:
-                content = f.read()
-                # 간단한 카테고리 추출 (실제로는 YAML 파싱 필요)
-                if "ChatGPT" in content:
-                    stats["categories"]["ChatGPT"] = stats["categories"].get("ChatGPT", 0) + 1
-                elif "머신러닝" in content:
-                    stats["categories"]["머신러닝"] = stats["categories"].get("머신러닝", 0) + 1
-        
-        return stats
-    
-    def update_sitemap(self):
-        """사이트맵 업데이트"""
-        sitemap_content = '''<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>https://tonyhwang1004.github.io/ai-insight-blog/</loc>
-        <lastmod>{}</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-</urlset>'''.format(datetime.now().strftime('%Y-%m-%d'))
-        
-        with open('sitemap.xml', 'w', encoding='utf-8') as f:
-            f.write(sitemap_content)
-
-if __name__ == "__main__":
-    manager = PostManager()
-    stats = manager.get_post_stats()
-    print(f"총 포스트: {stats['total_posts']}개")
-    manager.update_sitemap()
