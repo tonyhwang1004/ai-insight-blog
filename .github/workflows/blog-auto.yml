@@ -1,0 +1,44 @@
+name: 🤖 Simple Blog Auto Posting
+
+on:
+  # 수동 실행 가능
+  workflow_dispatch:
+  
+  # 매일 오전 9시 (한국시간) 자동 실행
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  create-blog-post:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+    - name: 📂 코드 체크아웃
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: 🐍 Python 환경 설정
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: 📝 블로그 포스트 생성
+      run: |
+        cd scripts
+        python auto_blogger.py
+        
+    - name: 🔄 변경사항 커밋 및 푸시
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "Simple Blog Bot"
+        git add .
+        if git diff --staged --quiet; then
+          echo "변경사항이 없습니다"
+        else
+          git commit -m "🤖 새 블로그 포스트 자동 생성: $(date +'%Y-%m-%d')"
+          git push
+        fi
