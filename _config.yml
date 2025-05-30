@@ -1,0 +1,20 @@
+title: AI 인사이트 블로그
+description: AI와 기술에 대한 인사이트를 공유하는 블로그
+url: "https://tonyhwang1004.github.io"
+baseurl: "/ai-insight-blog"
+
+markdown: kramdown
+highlighter: rouge
+permalink: /:year/:month/:day/:title/
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
