@@ -9,13 +9,16 @@ on:
 jobs:
   auto-blog-post:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
     
     steps:
     - name: 📥 코드 체크아웃
       uses: actions/checkout@v4
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
         fetch-depth: 0
+        persist-credentials: true
     
     - name: 🐍 Python 환경 설정
       uses: actions/setup-python@v4
@@ -54,8 +57,8 @@ jobs:
         git config --local user.name "AI Blog Bot 🤖"
         git add -A
         
-        # 생성된 포스트 제목 추출 (첫 번째 라인에서)
-        if [ -f "posts/"*.md ]; then
+        # 생성된 포스트 제목 추출
+        if [ -f posts/*.md ]; then
           LATEST_POST=$(ls -t posts/*.md | head -n1)
           POST_TITLE=$(head -n1 "$LATEST_POST" | sed 's/# //' | sed 's/^title: "//' | sed 's/"$//')
           COMMIT_MSG="🤖 AI 자동 포스팅: $POST_TITLE"
@@ -67,9 +70,7 @@ jobs:
         - 웹사이트 자동 업데이트 완료
         - 생성 시간: $(date '+%Y-%m-%d %H:%M:%S KST')"
         
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        git push origin main
     
     - name: 📋 실행 결과 요약
       run: |
