@@ -1,16 +1,90 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- Google Analytics 4 (GA4) - 최우선 로드 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R6HMSGEG7M"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-R6HMSGEG7M', {
+        // AI 블로그 맞춤 설정
+        'send_page_view': true,
+        'anonymize_ip': true,
+        'allow_google_signals': true,
+        'allow_ad_personalization_signals': true
+      });
+
+      // AI 블로그 전용 이벤트
+      gtag('event', 'ai_blog_visit', {
+        'event_category': 'engagement',
+        'event_label': 'ai_insight_blog_home',
+        'value': 1
+      });
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="최신 AI 기술 동향, 머신러닝, 딥러닝, ChatGPT, 생성형 AI에 대한 전문 분석과 인사이트를 제공하는 AI 전문 블로그입니다.">
-    <meta name="keywords" content="AI, 인공지능, 머신러닝, 딥러닝, ChatGPT, 생성형AI, AI뉴스, AI트렌드, 기술블로그">
+    <meta name="description" content="최신 AI 기술 동향, 머신러닝, 딥러닝, ChatGPT, 생성형 AI에 대한 전문 분석과 인사이트를 제공하는 AI 전문 블로그입니다. 매일 업데이트되는 고품질 AI 콘텐츠로 인공지능의 미래를 탐구하세요.">
+    <meta name="keywords" content="AI, 인공지능, 머신러닝, 딥러닝, ChatGPT, 생성형AI, AI뉴스, AI트렌드, 기술블로그, OpenAI, GPT, 자동화, 데이터사이언스">
     <meta name="author" content="AI Insight Blog">
-    <title>AI 인사이트 - 인공지능 전문 블로그</title>
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="language" content="Korean">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tonyhwang1004.github.io/ai-insight-blog">
+    <meta property="og:title" content="AI 인사이트 - 인공지능 전문 블로그">
+    <meta property="og:description" content="매일 업데이트되는 최신 AI 기술 동향과 전문 분석. ChatGPT, 머신러닝, 생성형 AI의 모든 것을 다루는 전문 블로그입니다.">
+    <meta property="og:image" content="https://tonyhwang1004.github.io/ai-insight-blog/og-image.jpg">
+    <meta property="og:site_name" content="AI 인사이트">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://tonyhwang1004.github.io/ai-insight-blog">
+    <meta property="twitter:title" content="AI 인사이트 - 인공지능 전문 블로그">
+    <meta property="twitter:description" content="매일 업데이트되는 최신 AI 기술 동향과 전문 분석. ChatGPT, 머신러닝, 생성형 AI의 모든 것을 다루는 전문 블로그입니다.">
+    <meta property="twitter:image" content="https://tonyhwang1004.github.io/ai-insight-blog/og-image.jpg">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://tonyhwang1004.github.io/ai-insight-blog">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    
+    <title>AI 인사이트 - 인공지능 전문 블로그 | 매일 업데이트되는 AI 뉴스와 트렌드</title>
     
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1278518420680356" crossorigin="anonymous"></script>
     <meta name="google-adsense-account" content="ca-pub-1278518420680356">
+    
+    <!-- JSON-LD 구조화 데이터 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "AI 인사이트",
+      "description": "최신 AI 기술 동향과 트렌드를 다루는 전문 블로그",
+      "url": "https://tonyhwang1004.github.io/ai-insight-blog",
+      "author": {
+        "@type": "Organization",
+        "name": "AI Insight Blog Team"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "AI 인사이트",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://tonyhwang1004.github.io/ai-insight-blog/logo.png"
+        }
+      },
+      "inLanguage": "ko-KR",
+      "keywords": ["AI", "인공지능", "머신러닝", "ChatGPT", "생성형AI"],
+      "genre": ["Technology", "Artificial Intelligence", "Machine Learning"]
+    }
+    </script>
     
     <style>
         :root {
@@ -22,6 +96,9 @@
             --bg-primary: #ffffff;
             --bg-secondary: #f9fafb;
             --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
         }
         
         * {
@@ -35,6 +112,7 @@
             line-height: 1.6;
             color: var(--text-primary);
             background-color: var(--bg-secondary);
+            scroll-behavior: smooth;
         }
         
         .container {
@@ -52,6 +130,7 @@
             top: 0;
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
         }
         
         .header-content {
@@ -66,6 +145,8 @@
             gap: 0.5rem;
             font-size: 1.8rem;
             font-weight: bold;
+            text-decoration: none;
+            color: white;
         }
         
         .logo-icon {
@@ -77,6 +158,11 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover .logo-icon {
+            transform: rotate(360deg);
         }
         
         nav ul {
@@ -92,6 +178,7 @@
             border-radius: 5px;
             transition: all 0.3s;
             font-weight: 500;
+            position: relative;
         }
         
         nav a:hover {
@@ -109,6 +196,17 @@
             overflow: hidden;
         }
         
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
         .hero-content {
             position: relative;
             z-index: 1;
@@ -119,6 +217,7 @@
             margin-bottom: 1rem;
             font-weight: 800;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
         }
         
         .hero-subtitle {
@@ -126,6 +225,7 @@
             margin-bottom: 2rem;
             opacity: 0.9;
             font-weight: 300;
+            animation: fadeInUp 1s ease-out 0.2s both;
         }
         
         .cta-buttons {
@@ -133,6 +233,7 @@
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s both;
         }
         
         .cta-button {
@@ -145,6 +246,23 @@
             font-weight: 600;
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .cta-button:hover::before {
+            left: 100%;
         }
         
         .cta-button:hover {
@@ -162,6 +280,18 @@
         .cta-button.secondary:hover {
             background: white;
             color: var(--primary-color);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Main Content */
@@ -186,6 +316,24 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             transition: all 0.3s;
             border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .post-card:hover::before {
+            transform: scaleX(1);
         }
         
         .post-card:hover {
@@ -209,6 +357,13 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .post-category:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
         }
         
         .post-title {
@@ -217,6 +372,12 @@
             margin-bottom: 1rem;
             color: var(--text-primary);
             line-height: 1.3;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .post-title:hover {
+            color: var(--primary-color);
         }
         
         .post-excerpt {
@@ -233,6 +394,16 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s;
+            position: relative;
+        }
+        
+        .read-more::after {
+            content: '→';
+            transition: transform 0.3s;
+        }
+        
+        .read-more:hover::after {
+            transform: translateX(5px);
         }
         
         .read-more:hover {
@@ -252,6 +423,11 @@
             padding: 1.5rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+        
+        .widget:hover {
+            transform: translateY(-2px);
         }
         
         .widget-title {
@@ -259,6 +435,40 @@
             font-weight: 700;
             margin-bottom: 1rem;
             color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .popular-post {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .popular-post:last-child {
+            border-bottom: none;
+        }
+        
+        .popular-post:hover {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+        
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 5px;
+            padding-left: 0.5rem;
+        }
+        
+        .category-item:hover {
+            background: var(--bg-secondary);
+            color: var(--primary-color);
         }
         
         /* Ad Spaces */
@@ -270,12 +480,31 @@
             margin: 2rem 0;
             border-radius: 10px;
             position: relative;
+            overflow: hidden;
+        }
+        
+        .ad-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
         
         .ad-placeholder {
             color: #9ca3af;
             font-style: italic;
             font-weight: 500;
+            position: relative;
+            z-index: 1;
         }
         
         /* Footer */
@@ -285,6 +514,29 @@
             padding: 2rem 0;
             text-align: center;
             margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
         }
         
         /* Responsive */
@@ -297,19 +549,104 @@
             .hero h1 {
                 font-size: 2.5rem;
             }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Focus styles */
+        a:focus,
+        button:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+        
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .preloader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only">메인 콘텐츠로 건너뛰기</a>
+
     <!-- Header -->
-    <header>
+    <header role="banner">
         <div class="container">
             <div class="header-content">
-                <div class="logo">
-                    <div class="logo-icon">🤖</div>
+                <a href="#home" class="logo" aria-label="AI 인사이트 홈페이지">
+                    <div class="logo-icon" aria-hidden="true">🤖</div>
                     <span>AI 인사이트</span>
-                </div>
-                <nav>
+                </a>
+                <nav role="navigation" aria-label="주요 메뉴">
                     <ul>
                         <li><a href="#home">홈</a></li>
                         <li><a href="#posts">최신글</a></li>
@@ -322,14 +659,14 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero" id="home">
+    <section class="hero" id="home" role="banner">
         <div class="container">
             <div class="hero-content">
                 <h1>AI 인사이트</h1>
                 <p class="hero-subtitle">인공지능의 미래를 탐구하는 전문 블로그</p>
                 <div class="cta-buttons">
-                    <a href="#posts" class="cta-button">최신 글 보기</a>
-                    <a href="#newsletter" class="cta-button secondary">뉴스레터 구독</a>
+                    <a href="#posts" class="cta-button" role="button">최신 글 보기</a>
+                    <a href="#newsletter" class="cta-button secondary" role="button">뉴스레터 구독</a>
                 </div>
             </div>
         </div>
@@ -338,97 +675,346 @@
     <!-- Main Content -->
     <div class="container">
         <!-- Top Ad Space -->
-        <div class="ad-container">
+        <div class="ad-container" role="complementary" aria-label="광고">
             <div class="ad-placeholder">Google AdSense 광고 (728x90)</div>
         </div>
 
-        <div class="main-content">
+        <div class="main-content" id="main-content">
             <!-- Blog Posts -->
-            <main class="blog-posts" id="posts">
-                <article class="post-card">
+            <main class="blog-posts" id="posts" role="main">
+                <h2 class="sr-only">최신 AI 블로그 포스트</h2>
+                
+                <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
                     <div class="post-meta">
-                        <span class="post-category">ChatGPT</span>
-                        <span>📅 2025.05.29</span>
-                        <span>👀 1,234 views</span>
+                        <span class="post-category" itemprop="articleSection">ChatGPT</span>
+                        <span><span aria-hidden="true">📅</span> <time datetime="2025-05-29" itemprop="datePublished">2025.05.29</time></span>
+                        <span><span aria-hidden="true">👀</span> <span itemprop="interactionCount">1,234 views</span></span>
                     </div>
-                    <h2 class="post-title">ChatGPT-5 출시 예정일과 예상 기능들</h2>
-                    <p class="post-excerpt">
+                    <h2 class="post-title" itemprop="headline">ChatGPT-5 출시 예정일과 예상 기능들</h2>
+                    <p class="post-excerpt" itemprop="description">
                         OpenAI가 차세대 언어모델 ChatGPT-5의 개발을 완료 단계에 접어들었다고 발표했습니다. 
                         기존 GPT-4 대비 10배 향상된 성능과 멀티모달 기능 강화가 예상됩니다.
                     </p>
-                    <a href="#" class="read-more">더 읽기 →</a>
+                    <a href="#" class="read-more" aria-label="ChatGPT-5 출시 예정일과 예상 기능들 전체 글 읽기">더 읽기</a>
+                    <meta itemprop="author" content="AI Insight Blog">
+                    <meta itemprop="publisher" content="AI 인사이트">
                 </article>
 
-                <article class="post-card">
+                <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
                     <div class="post-meta">
-                        <span class="post-category">머신러닝</span>
-                        <span>📅 2025.05.28</span>
-                        <span>👀 987 views</span>
+                        <span class="post-category" itemprop="articleSection">머신러닝</span>
+                        <span><span aria-hidden="true">📅</span> <time datetime="2025-05-28" itemprop="datePublished">2025.05.28</time></span>
+                        <span><span aria-hidden="true">👀</span> <span itemprop="interactionCount">987 views</span></span>
                     </div>
-                    <h2 class="post-title">AI 코딩 어시스턴트 비교 분석</h2>
-                    <p class="post-excerpt">
+                    <h2 class="post-title" itemprop="headline">AI 코딩 어시스턴트 비교 분석</h2>
+                    <p class="post-excerpt" itemprop="description">
                         개발자들 사이에서 인기를 끌고 있는 AI 코딩 어시스턴트들을 심층 비교해봅니다. 
                         GitHub Copilot, Cursor, Claude의 장단점과 실제 사용 경험을 공유합니다.
                     </p>
-                    <a href="#" class="read-more">더 읽기 →</a>
+                    <a href="#" class="read-more" aria-label="AI 코딩 어시스턴트 비교 분석 전체 글 읽기">더 읽기</a>
+                    <meta itemprop="author" content="AI Insight Blog">
+                    <meta itemprop="publisher" content="AI 인사이트">
                 </article>
 
-                <div class="ad-container">
+                <div class="ad-container" role="complementary" aria-label="광고">
                     <div class="ad-placeholder">Google AdSense 광고 (300x250)</div>
                 </div>
 
-                <article class="post-card">
+                <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
                     <div class="post-meta">
-                        <span class="post-category">AI 트렌드</span>
-                        <span>📅 2025.05.27</span>
-                        <span>👀 2,134 views</span>
+                        <span class="post-category" itemprop="articleSection">AI 트렌드</span>
+                        <span><span aria-hidden="true">📅</span> <time datetime="2025-05-27" itemprop="datePublished">2025.05.27</time></span>
+                        <span><span aria-hidden="true">👀</span> <span itemprop="interactionCount">2,134 views</span></span>
                     </div>
-                    <h2 class="post-title">2025년 AI 스타트업 투자 동향 분석</h2>
-                    <p class="post-excerpt">
+                    <h2 class="post-title" itemprop="headline">2025년 AI 스타트업 투자 동향 분석</h2>
+                    <p class="post-excerpt" itemprop="description">
                         2025년 상반기 AI 스타트업들이 받은 투자 현황을 분석하고, 
                         생성형 AI, 자율주행, 헬스케어 AI 등 각 분야별 투자 트렌드를 정리했습니다.
                     </p>
-                    <a href="#" class="read-more">더 읽기 →</a>
+                    <a href="#" class="read-more" aria-label="2025년 AI 스타트업 투자 동향 분석 전체 글 읽기">더 읽기</a>
+                    <meta itemprop="author" content="AI Insight Blog">
+                    <meta itemprop="publisher" content="AI 인사이트">
                 </article>
             </main>
 
             <!-- Sidebar -->
-            <aside class="sidebar">
-                <div class="ad-container">
+            <aside class="sidebar" role="complementary">
+                <div class="ad-container" aria-label="광고">
                     <div class="ad-placeholder">Google AdSense<br>(300x600)</div>
                 </div>
 
                 <div class="widget">
-                    <h3 class="widget-title">🔥 인기 글</h3>
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div>1. ChatGPT로 수익 창출하는 10가지 방법</div>
-                        <div>2. AI가 일자리를 대체할까? 미래 직업 전망</div>
-                        <div>3. 무료 AI 이미지 생성 도구 TOP 5</div>
-                        <div>4. Python으로 시작하는 머신러닝</div>
-                        <div>5. AI 윤리 가이드라인과 책임감 있는 AI</div>
-                    </div>
+                    <h3 class="widget-title"><span aria-hidden="true">🔥</span> 인기 글</h3>
+                    <nav aria-label="인기 글 목록">
+                        <div class="popular-post">1. ChatGPT로 수익 창출하는 10가지 방법</div>
+                        <div class="popular-post">2. AI가 일자리를 대체할까? 미래 직업 전망</div>
+                        <div class="popular-post">3. 무료 AI 이미지 생성 도구 TOP 5</div>
+                        <div class="popular-post">4. Python으로 시작하는 머신러닝</div>
+                        <div class="popular-post">5. AI 윤리 가이드라인과 책임감 있는 AI</div>
+                    </nav>
                 </div>
 
                 <div class="widget">
-                    <h3 class="widget-title">📂 카테고리</h3>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <div>ChatGPT (24)</div>
-                        <div>머신러닝 (18)</div>
-                        <div>딥러닝 (15)</div>
-                        <div>AI 트렌드 (12)</div>
-                        <div>AI 도구 (21)</div>
-                    </div>
+                    <h3 class="widget-title"><span aria-hidden="true">📂</span> 카테고리</h3>
+                    <nav aria-label="카테고리 목록">
+                        <div class="category-item">
+                            <span>ChatGPT</span>
+                            <span>(24)</span>
+                        </div>
+                        <div class="category-item">
+                            <span>머신러닝</span>
+                            <span>(18)</span>
+                        </div>
+                        <div class="category-item">
+                            <span>딥러닝</span>
+                            <span>(15)</span>
+                        </div>
+                        <div class="category-item">
+                            <span>AI 트렌드</span>
+                            <span>(12)</span>
+                        </div>
+                        <div class="category-item">
+                            <span>AI 도구</span>
+                            <span>(21)</span>
+                        </div>
+                    </nav>
                 </div>
             </aside>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
-            <p>&copy; 2025 AI 인사이트. All rights reserved.</p>
-            <p>📧 contact@ai-insight.blog | 🌐 https://tonyhwang1004.github.io/ai-insight-blog</p>
+            <div class="footer-content">
+                <nav class="footer-links" aria-label="푸터 링크">
+                    <a href="#privacy">개인정보처리방침</a>
+                    <a href="#terms">이용약관</a>
+                    <a href="#sitemap">사이트맵</a>
+                    <a href="#rss">RSS</a>
+                </nav>
+                <p>&copy; 2025 AI 인사이트. All rights reserved.</p>
+                <p>
+                    <span aria-hidden="true">📧</span> contact@ai-insight.blog | 
+                    <span aria-hidden="true">🌐</span> https://tonyhwang1004.github.io/ai-insight-blog
+                </p>
+            </div>
         </div>
     </footer>
+
+    <!-- Enhanced JavaScript -->
+    <script>
+        // 페이지 로드 완료 후 preloader 숨기기
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500);
+            }, 500);
+        });
+
+        // Google Analytics 이벤트 추적
+        document.addEventListener('DOMContentLoaded', function() {
+            // 블로그 포스트 클릭 추적
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('read-more')) {
+                    const postCard = e.target.closest('.post-card');
+                    const postTitle = postCard.querySelector('.post-title').textContent;
+                    const postCategory = postCard.querySelector('.post-category').textContent;
+                    
+                    gtag('event', 'blog_post_click', {
+                        'event_category': 'content',
+                        'event_label': postTitle,
+                        'custom_parameter_1': postCategory,
+                        'value': 1
+                    });
+                }
+            });
+
+            // 카테고리 클릭 추적
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('post-category')) {
+                    gtag('event', 'category_click', {
+                        'event_category': 'navigation',
+                        'event_label': e.target.textContent,
+                        'value': 1
+                    });
+                }
+                
+                if (e.target.classList.contains('category-item')) {
+                    const categoryName = e.target.querySelector('span').textContent;
+                    gtag('event', 'sidebar_category_click', {
+                        'event_category': 'navigation',
+                        'event_label': categoryName,
+                        'value': 1
+                    });
+                }
+            });
+
+            // 인기 글 클릭 추적
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('popular-post')) {
+                    gtag('event', 'popular_post_click', {
+                        'event_category': 'sidebar_interaction',
+                        'event_label': e.target.textContent,
+                        'value': 1
+                    });
+                }
+            });
+
+            // CTA 버튼 클릭 추적
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('cta-button')) {
+                    const buttonText = e.target.textContent;
+                    const buttonType = e.target.classList.contains('secondary') ? 'secondary' : 'primary';
+                    
+                    gtag('event', 'cta_click', {
+                        'event_category': 'engagement',
+                        'event_label': buttonText,
+                        'custom_parameter_1': buttonType,
+                        'value': 1
+                    });
+                }
+            });
+
+            // 스크롤 깊이 추적
+            let maxScroll = 0;
+            let scrollMilestones = [25, 50, 75, 100];
+            let trackedMilestones = [];
+
+            window.addEventListener('scroll', throttle(function() {
+                const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+                
+                if (scrollPercent > maxScroll) {
+                    maxScroll = scrollPercent;
+                    
+                    scrollMilestones.forEach(milestone => {
+                        if (scrollPercent >= milestone && !trackedMilestones.includes(milestone)) {
+                            trackedMilestones.push(milestone);
+                            gtag('event', 'scroll_depth', {
+                                'event_category': 'engagement',
+                                'event_label': `${milestone}%`,
+                                'value': milestone
+                            });
+                        }
+                    });
+                }
+            }, 500));
+
+            // 페이지 체류 시간 추적
+            let startTime = Date.now();
+            let timeOnPageTracked = false;
+
+            window.addEventListener('beforeunload', function() {
+                if (!timeOnPageTracked) {
+                    const timeOnPage = Math.round((Date.now() - startTime) / 1000);
+                    gtag('event', 'time_on_page', {
+                        'event_category': 'engagement',
+                        'value': timeOnPage
+                    });
+                    timeOnPageTracked = true;
+                }
+            });
+
+            // 30초 후 체류 시간 추적
+            setTimeout(() => {
+                if (!timeOnPageTracked) {
+                    gtag('event', 'engaged_user', {
+                        'event_category': 'engagement',
+                        'event_label': '30_seconds_engaged',
+                        'value': 30
+                    });
+                }
+            }, 30000);
+        });
+
+        // 유틸리티 함수: throttle
+        function throttle(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // 부드러운 스크롤
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 키보드 네비게이션 개선
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-navigation');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-navigation');
+        });
+
+        // 성능 모니터링
+        window.addEventListener('load', function() {
+            // Core Web Vitals 측정
+            if ('PerformanceObserver' in window) {
+                // LCP (Largest Contentful Paint) 측정
+                new PerformanceObserver((entryList) => {
+                    const entries = entryList.getEntries();
+                    const lastEntry = entries[entries.length - 1];
+                    gtag('event', 'web_vitals', {
+                        'event_category': 'performance',
+                        'event_label': 'LCP',
+                        'value': Math.round(lastEntry.startTime)
+                    });
+                }).observe({entryTypes: ['largest-contentful-paint']});
+
+                // FID (First Input Delay) 측정
+                new PerformanceObserver((entryList) => {
+                    const entries = entryList.getEntries();
+                    entries.forEach(entry => {
+                        gtag('event', 'web_vitals', {
+                            'event_category': 'performance',
+                            'event_label': 'FID',
+                            'value': Math.round(entry.processingStart - entry.startTime)
+                        });
+                    });
+                }).observe({entryTypes: ['first-input']});
+            }
+        });
+    </script>
+
+    <!-- Error Handling -->
+    <script>
+        window.addEventListener('error', function(e) {
+            gtag('event', 'javascript_error', {
+                'event_category': 'error',
+                'event_label': e.message,
+                'value': 1
+            });
+        });
+
+        window.addEventListener('unhandledrejection', function(e) {
+            gtag('event', 'promise_rejection', {
+                'event_category': 'error',
+                'event_label': e.reason,
+                'value': 1
+            });
+        });
+    </script>
 </body>
 </html>
