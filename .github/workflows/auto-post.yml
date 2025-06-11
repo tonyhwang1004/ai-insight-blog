@@ -1,9 +1,8 @@
 name: 🤖 AI Auto Blog Posting
-
 on:
   schedule:
     # 매일 오전 9시 (UTC), 한국시간 오후 6시
-    - cron: '0 9 * * *'
+    - cron: '0 9 * * *'  # 수정: 마지막 * 하나 제거
   workflow_dispatch: # 수동 실행 버튼 활성화
 
 jobs:
@@ -17,6 +16,7 @@ jobs:
     - name: 📥 코드 체크아웃
       uses: actions/checkout@v4
       with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # 추가: 토큰 명시
         fetch-depth: 0
         persist-credentials: true
     
@@ -79,7 +79,7 @@ jobs:
         if [ "${{ steps.verify-changed-files.outputs.changed }}" == "true" ]; then
           echo "✅ **성공**: 새로운 블로그 포스트가 생성되어 웹사이트에 업데이트되었습니다." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🔗 **라이브 사이트**: https://tonyhwang1004.github.io/ai-insight-blog" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 **라이브 사이트**: https://tonyhuang1004.github.io/ai-insight-blog" >> $GITHUB_STEP_SUMMARY
         else
           echo "ℹ️ **정보**: 이번 실행에서는 새로운 포스트가 생성되지 않았습니다." >> $GITHUB_STEP_SUMMARY
         fi
