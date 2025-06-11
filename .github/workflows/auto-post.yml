@@ -1,0 +1,86 @@
+name: 🤖 AI Auto Blog Posting
+
+on:
+  schedule:
+    # 매일 오전 9시 (UTC), 한국시간 오후 6시
+    - cron: '0 9 * * *'
+  workflow_dispatch: # 수동 실행 버튼 활성화
+
+jobs:
+  auto-blog-post:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 코드 체크아웃
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+    
+    - name: 🐍 Python 환경 설정
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+    
+    - name: 📦 의존성 설치
+      run: |
+        python -m pip install --upgrade pip
+        pip install openai>=1.0.0 requests>=2.31.0 beautifulsoup4>=4.12.0
+    
+    - name: 🤖 AI 블로그 포스트 생성
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        cd scripts
+        python auto_blogger.py
+      continue-on-error: true
+    
+    - name: 📊 변경사항 확인
+      id: verify-changed-files
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "📝 새로운 블로그 포스트가 생성되었습니다."
+        else
+          echo "changed=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ 변경사항이 없습니다."
+        fi
+    
+    - name: 💾 변경사항 커밋 및 푸시
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "AI Blog Bot 🤖"
+        git add -A
+        
+        # 생성된 포스트 제목 추출 (첫 번째 라인에서)
+        if [ -f "posts/"*.md ]; then
+          LATEST_POST=$(ls -t posts/*.md | head -n1)
+          POST_TITLE=$(head -n1 "$LATEST_POST" | sed 's/# //' | sed 's/^title: "//' | sed 's/"$//')
+          COMMIT_MSG="🤖 AI 자동 포스팅: $POST_TITLE"
+        else
+          COMMIT_MSG="🤖 AI 자동 포스팅 - $(date '+%Y-%m-%d %H:%M:%S')"
+        fi
+        
+        git commit -m "$COMMIT_MSG" -m "- OpenAI GPT로 자동 생성된 블로그 포스트
+        - 웹사이트 자동 업데이트 완료
+        - 생성 시간: $(date '+%Y-%m-%d %H:%M:%S KST')"
+        
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: 📋 실행 결과 요약
+      run: |
+        echo "## 🤖 AI 자동 블로그 포스팅 결과" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ steps.verify-changed-files.outputs.changed }}" == "true" ]; then
+          echo "✅ **성공**: 새로운 블로그 포스트가 생성되어 웹사이트에 업데이트되었습니다." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 **라이브 사이트**: https://tonyhwang1004.github.io/ai-insight-blog" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "ℹ️ **정보**: 이번 실행에서는 새로운 포스트가 생성되지 않았습니다." >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "📅 **실행 시간**: $(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
