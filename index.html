@@ -9,14 +9,12 @@
       gtag('js', new Date());
 
       gtag('config', 'G-RG6MS6EQ7M', {
-        // AI 블로그 맞춤 설정
         'send_page_view': true,
         'anonymize_ip': true,
         'allow_google_signals': true,
         'allow_ad_personalization_signals': true
       });
 
-      // AI 블로그 전용 이벤트
       gtag('event', 'ai_blog_visit', {
         'event_category': 'engagement',
         'event_label': 'ai_insight_blog_home',
@@ -48,10 +46,7 @@
     <meta property="twitter:description" content="매일 업데이트되는 최신 AI 기술 동향과 전문 분석. ChatGPT, 머신러닝, 생성형 AI의 모든 것을 다루는 전문 블로그입니다.">
     <meta property="twitter:image" content="https://tonyhwang1004.github.io/ai-insight-blog/og-image.jpg">
 
-    <!-- Canonical URL -->
     <link rel="canonical" href="https://tonyhwang1004.github.io/ai-insight-blog/">
-    
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
     
     <title>AI 인사이트 - 인공지능 전문 블로그 | 매일 업데이트되는 AI 뉴스와 트렌드</title>
@@ -609,7 +604,6 @@
             border: 0;
         }
         
-        /* Focus styles */
         a:focus,
         button:focus {
             outline: 2px solid var(--accent-color);
@@ -657,7 +651,6 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- Skip to main content for accessibility -->
     <a href="#main-content" class="sr-only">메인 콘텐츠로 건너뛰기</a>
 
     <!-- Header -->
@@ -790,138 +783,251 @@
         </div>
     </footer>
 
-    <!-- AI Post Loading JavaScript -->
+    <!-- Enhanced JavaScript with Multiple Fallback Methods -->
     <script>
         // 전역 변수
         let allPosts = [];
-        let categoryCounts = {
-            chatgpt: 0,
-            ml: 0,
-            dl: 0,
-            trend: 0,
-            tool: 0
-        };
+        let categoryCounts = { chatgpt: 0, ml: 0, dl: 0, trend: 0, tool: 0 };
+        let apiAttempts = 0;
+        const maxApiAttempts = 3;
 
         // 페이지 로드 완료 후 preloader 숨기기
         window.addEventListener('load', function() {
             const preloader = document.getElementById('preloader');
             setTimeout(() => {
                 preloader.classList.add('hidden');
-                setTimeout(() => {
-                    preloader.style.display = 'none';
-                }, 500);
+                setTimeout(() => preloader.style.display = 'none', 500);
             }, 500);
         });
 
-        // AI 포스트 로딩 함수
+        // 강화된 AI 포스트 로딩 함수
         async function loadAIPosts() {
+            console.log('🔄 AI 포스트 로딩 시작...');
+            
             try {
-                // 로딩 상태 표시
                 showLoadingState();
                 
-                // GitHub API로 posts 폴더의 파일 목록 가져오기
-                const response = await fetch('https://api.github.com/repos/tonyhwang1004/ai-insight-blog/contents/posts');
-                const files = await response.json();
+                // 여러 방법으로 포스트 로딩 시도
+                let success = false;
                 
-                if (!Array.isArray(files) || files.length === 0) {
-                    showNoAIPosts();
-                    return;
-                }
-                
-                // .md 파일만 필터링하고 최신순 정렬
-                const mdFiles = files
-                    .filter(file => file.name.endsWith('.md'))
-                    .sort((a, b) => b.name.localeCompare(a.name))
-                    .slice(0, 10); // 최대 10개 포스트
-                
-                const postsContainer = document.querySelector('.blog-posts');
-                
-                // 기존 포스트들 제거 (로딩 제외)
-                const existingPosts = postsContainer.querySelectorAll('.post-card:not(.loading)');
-                existingPosts.forEach(post => post.remove());
-                
-                allPosts = []; // 초기화
-                
-                // 각 포스트 내용 가져오기
-                for (let i = 0; i < mdFiles.length; i++) {
-                    const file = mdFiles[i];
-                    try {
-                        const contentResponse = await fetch(file.download_url);
-                        const content = await contentResponse.text();
-                        
-                        const postCard = createAIPostCard(file, content);
-                        
-                        // 로딩 카드 다음에 삽입
-                        const loadingCard = postsContainer.querySelector('.loading');
-                        if (loadingCard) {
-                            postsContainer.insertBefore(postCard, loadingCard.nextSibling);
-                        } else {
-                            postsContainer.appendChild(postCard);
-                        }
-                        
-                        // 중간에 광고 삽입 (3번째 포스트 후)
-                        if (i === 2) {
-                            const adCard = createAdCard();
-                            postsContainer.insertBefore(adCard, postCard.nextSibling);
-                        }
-                        
-                        allPosts.push({
-                            title: extractTitle(file.name, content.split('\n')),
-                            category: extractCategory(file.name, content.split('\n')),
-                            date: extractFormattedDate(file.name),
-                            file: file
-                        });
-                        
-                        // Google Analytics 추적
-                        gtag('event', 'ai_post_loaded', {
-                            'event_category': 'content',
-                            'event_label': extractTitle(file.name, content.split('\n')),
-                            'value': 1
-                        });
-                        
-                    } catch (error) {
-                        console.error('포스트 로딩 오류:', file.name, error);
+                // 방법 1: GitHub API
+                try {
+                    success = await loadPostsFromAPI();
+                    if (success) {
+                        console.log('✅ GitHub API로 포스트 로딩 성공');
+                        return;
                     }
+                } catch (error) {
+                    console.warn('⚠️ GitHub API 방법 실패:', error);
                 }
                 
-                // 로딩 표시 제거
-                const loadingElement = postsContainer.querySelector('.loading');
-                if (loadingElement) {
-                    loadingElement.remove();
+                // 방법 2: Raw GitHub Content
+                try {
+                    success = await loadPostsFromRaw();
+                    if (success) {
+                        console.log('✅ Raw Content로 포스트 로딩 성공');
+                        return;
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Raw Content 방법 실패:', error);
                 }
                 
-                // 사이드바 업데이트
-                updateSidebarStats();
-                updatePopularTopics();
-                
-                // 포스트가 하나도 없으면 메시지 표시
-                if (allPosts.length === 0) {
-                    showNoAIPosts();
+                // 방법 3: 알려진 파일명으로 직접 접근
+                try {
+                    success = await loadKnownPosts();
+                    if (success) {
+                        console.log('✅ 알려진 파일로 포스트 로딩 성공');
+                        return;
+                    }
+                } catch (error) {
+                    console.warn('⚠️ 알려진 파일 방법 실패:', error);
                 }
+                
+                // 모든 방법 실패
+                throw new Error('모든 로딩 방법 실패');
                 
             } catch (error) {
-                console.error('AI 포스트 로딩 실패:', error);
+                console.error('❌ 모든 포스트 로딩 방법 실패:', error);
                 showAIPostError();
             }
         }
 
-        // 포스트 카드 생성
-        function createAIPostCard(file, content) {
+        // 방법 1: GitHub API 사용
+        async function loadPostsFromAPI() {
+            console.log('📡 GitHub API 시도 중...');
+            
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            
+            const response = await fetch('https://api.github.com/repos/tonyhwang1004/ai-insight-blog/contents/posts', {
+                signal: controller.signal,
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'User-Agent': 'AI-Insight-Blog-1.0',
+                    'Cache-Control': 'no-cache'
+                }
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                throw new Error(`GitHub API 오류: ${response.status}`);
+            }
+            
+            const files = await response.json();
+            
+            if (!Array.isArray(files) || files.length === 0) {
+                return false;
+            }
+            
+            return await processPostFiles(files);
+        }
+
+        // 방법 2: Raw GitHub Content 사용
+        async function loadPostsFromRaw() {
+            console.log('📄 Raw Content 시도 중...');
+            
+            // 알려진 패턴의 파일명들 시도
+            const potentialFiles = generatePotentialFilenames();
+            let foundPosts = 0;
+            
+            for (const filename of potentialFiles) {
+                try {
+                    const rawUrl = `https://raw.githubusercontent.com/tonyhwang1004/ai-insight-blog/main/posts/${filename}`;
+                    const response = await fetch(rawUrl);
+                    
+                    if (response.ok) {
+                        const content = await response.text();
+                        const fakeFile = {
+                            name: filename,
+                            html_url: `https://github.com/tonyhwang1004/ai-insight-blog/blob/main/posts/${filename}`,
+                            download_url: rawUrl
+                        };
+                        
+                        await createAndDisplayPost(fakeFile, content);
+                        foundPosts++;
+                        
+                        if (foundPosts >= 5) break; // 최대 5개만
+                    }
+                } catch (error) {
+                    // 개별 파일 오류는 무시
+                }
+            }
+            
+            return foundPosts > 0;
+        }
+
+        // 방법 3: 알려진 포스트 직접 로딩
+        async function loadKnownPosts() {
+            console.log('📋 알려진 포스트 시도 중...');
+            
+            // 실제로 존재한다고 확인된 파일
+            const knownFiles = [
+                '20250611_232832_머신러닝_초보자를_위한_실전_가이드.md'
+            ];
+            
+            let foundPosts = 0;
+            
+            for (const filename of knownFiles) {
+                try {
+                    const rawUrl = `https://raw.githubusercontent.com/tonyhwang1004/ai-insight-blog/main/posts/${filename}`;
+                    const response = await fetch(rawUrl);
+                    
+                    if (response.ok) {
+                        const content = await response.text();
+                        const fakeFile = {
+                            name: filename,
+                            html_url: `https://github.com/tonyhwang1004/ai-insight-blog/blob/main/posts/${filename}`,
+                            download_url: rawUrl
+                        };
+                        
+                        await createAndDisplayPost(fakeFile, content);
+                        foundPosts++;
+                    }
+                } catch (error) {
+                    console.warn('알려진 파일 로딩 실패:', filename, error);
+                }
+            }
+            
+            return foundPosts > 0;
+        }
+
+        // 잠재적 파일명 생성
+        function generatePotentialFilenames() {
+            const filenames = [];
+            const today = new Date();
+            
+            // 최근 7일간의 파일명 패턴 생성
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today.getTime() - (i * 24 * 60 * 60 * 1000));
+                const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
+                
+                const topics = [
+                    '머신러닝_초보자를_위한_실전_가이드',
+                    'ChatGPT_활용법과_프롬프트_엔지니어링_팁',
+                    '딥러닝_기초부터_고급까지_완벽_정리',
+                    'AI_코딩_어시스턴트_비교_분석',
+                    '2025년_AI_트렌드_및_전망_분석',
+                    '생성형_AI의_비즈니스_활용_사례'
+                ];
+                
+                const times = ['180000', '232832', '120000', '090000'];
+                
+                topics.forEach(topic => {
+                    times.forEach(time => {
+                        filenames.push(`${dateStr}_${time}_${topic}.md`);
+                    });
+                });
+            }
+            
+            return filenames;
+        }
+
+        // 포스트 파일들 처리
+        async function processPostFiles(files) {
+            const mdFiles = files
+                .filter(file => file.name && file.name.endsWith('.md'))
+                .sort((a, b) => b.name.localeCompare(a.name))
+                .slice(0, 10);
+            
+            if (mdFiles.length === 0) {
+                return false;
+            }
+            
+            let successCount = 0;
+            
+            for (const file of mdFiles) {
+                try {
+                    const response = await fetch(file.download_url);
+                    if (!response.ok) continue;
+                    
+                    const content = await response.text();
+                    await createAndDisplayPost(file, content);
+                    successCount++;
+                } catch (error) {
+                    console.warn('파일 처리 실패:', file.name, error);
+                }
+            }
+            
+            return successCount > 0;
+        }
+
+        // 포스트 생성 및 표시
+        async function createAndDisplayPost(file, content) {
             const lines = content.split('\n');
             const title = extractTitle(file.name, lines);
             const excerpt = extractExcerpt(lines);
             const category = extractCategory(file.name, lines);
             const date = extractFormattedDate(file.name);
             
-            // 카테고리 카운트 업데이트
             updateCategoryCount(category);
             
-            const article = document.createElement('article');
-            article.className = 'post-card';
-            article.setAttribute('itemscope', '');
-            article.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+            const postCard = document.createElement('article');
+            postCard.className = 'post-card';
+            postCard.setAttribute('itemscope', '');
+            postCard.setAttribute('itemtype', 'https://schema.org/BlogPosting');
             
-            article.innerHTML = `
+            postCard.innerHTML = `
                 <div class="post-meta">
                     <span class="post-category" itemprop="articleSection">${category}</span>
                     <span><span aria-hidden="true">📅</span> <time datetime="${extractISODate(file.name)}" itemprop="datePublished">${date}</time></span>
@@ -934,28 +1040,34 @@
                 <meta itemprop="publisher" content="AI 인사이트">
             `;
             
-            return article;
+            const postsContainer = document.querySelector('.blog-posts');
+            const loadingCard = postsContainer.querySelector('.loading');
+            
+            if (loadingCard) {
+                postsContainer.insertBefore(postCard, loadingCard.nextSibling);
+            } else {
+                postsContainer.appendChild(postCard);
+            }
+            
+            allPosts.push({ title, category, date, file });
+            
+            // Google Analytics 추적
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'ai_post_loaded', {
+                    'event_category': 'content',
+                    'event_label': title,
+                    'value': 1
+                });
+            }
         }
 
-        // 광고 카드 생성
-        function createAdCard() {
-            const adDiv = document.createElement('div');
-            adDiv.className = 'ad-container';
-            adDiv.setAttribute('role', 'complementary');
-            adDiv.setAttribute('aria-label', '광고');
-            adDiv.innerHTML = '<div class="ad-placeholder">Google AdSense 광고 (300x250)</div>';
-            return adDiv;
-        }
-
-        // 텍스트 추출 함수들
+        // 유틸리티 함수들
         function extractTitle(filename, lines) {
-            // 파일명에서 제목 추출 (언더스코어를 공백으로 변환)
             const match = filename.match(/\d{8}_\d{6}_(.+)\.md$/);
             if (match) {
                 return match[1].replace(/_/g, ' ');
             }
             
-            // 파일 내용에서 제목 찾기
             for (const line of lines) {
                 const trimmed = line.trim();
                 if (trimmed.startsWith('# ')) {
@@ -970,54 +1082,30 @@
         }
 
         function extractExcerpt(lines) {
-            let excerpt = '';
-            let foundContent = false;
-            
             for (const line of lines) {
                 const trimmed = line.trim();
-                
-                // 메타데이터나 제목 건너뛰기
-                if (trimmed.startsWith('#') || 
-                    trimmed.startsWith('title:') || 
-                    trimmed.startsWith('date:') || 
-                    trimmed.startsWith('---') ||
-                    trimmed.length === 0) {
-                    continue;
-                }
-                
-                // 첫 번째 실제 내용 찾기
-                if (trimmed.length > 20) {
-                    excerpt = trimmed;
-                    foundContent = true;
-                    break;
+                if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('title:') && 
+                    !trimmed.startsWith('date:') && !trimmed.startsWith('---') && trimmed.length > 20) {
+                    return trimmed.length > 150 ? trimmed.substring(0, 150) + '...' : trimmed;
                 }
             }
-            
-            if (!foundContent) {
-                excerpt = 'AI가 생성한 최신 인사이트를 확인해보세요.';
-            }
-            
-            // 150자로 제한
-            return excerpt.length > 150 ? excerpt.substring(0, 150) + '...' : excerpt;
+            return 'AI가 생성한 최신 인사이트를 확인해보세요.';
         }
 
         function extractCategory(filename, lines) {
-            // 파일명이나 내용에서 카테고리 추출
             const title = extractTitle(filename, lines).toLowerCase();
-            
             if (title.includes('chatgpt') || title.includes('gpt')) return 'ChatGPT';
             if (title.includes('머신러닝') || title.includes('machine learning')) return '머신러닝';
             if (title.includes('딥러닝') || title.includes('deep learning')) return '딥러닝';
             if (title.includes('투자') || title.includes('스타트업') || title.includes('트렌드') || title.includes('동향')) return 'AI 트렌드';
             if (title.includes('코딩') || title.includes('프로그래밍') || title.includes('도구') || title.includes('tool')) return 'AI 도구';
-            
             return 'AI 일반';
         }
 
         function extractFormattedDate(filename) {
             const match = filename.match(/(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})/);
             if (match) {
-                const [, year, month, day, hour, minute] = match;
+                const [, year, month, day] = match;
                 return `${year}.${month}.${day}`;
             }
             return '날짜 미상';
@@ -1032,7 +1120,6 @@
             return new Date().toISOString().split('T')[0];
         }
 
-        // 카테고리 카운트 업데이트
         function updateCategoryCount(category) {
             switch(category) {
                 case 'ChatGPT': categoryCounts.chatgpt++; break;
@@ -1043,25 +1130,19 @@
             }
         }
 
-        // 사이드바 통계 업데이트
         function updateSidebarStats() {
-            // 카테고리 카운트 업데이트
             document.getElementById('chatgpt-count').textContent = `(${categoryCounts.chatgpt})`;
             document.getElementById('ml-count').textContent = `(${categoryCounts.ml})`;
             document.getElementById('dl-count').textContent = `(${categoryCounts.dl})`;
             document.getElementById('trend-count').textContent = `(${categoryCounts.trend})`;
             document.getElementById('tool-count').textContent = `(${categoryCounts.tool})`;
-            
-            // 총 포스트 수
             document.getElementById('total-posts').textContent = allPosts.length;
             
-            // 마지막 업데이트 (가장 최근 포스트 날짜)
             if (allPosts.length > 0) {
                 document.getElementById('last-update').textContent = allPosts[0].date;
             }
         }
 
-        // 인기 주제 업데이트
         function updatePopularTopics() {
             const topicsContainer = document.getElementById('popular-topics');
             const topics = allPosts.slice(0, 5).map(post => post.title);
@@ -1073,19 +1154,20 @@
             }
         }
 
-        // 상태 표시 함수들
         function showLoadingState() {
+            console.log('⏳ 로딩 상태 표시');
             const postsContainer = document.querySelector('.blog-posts');
             const loadingCard = postsContainer.querySelector('.loading');
             if (loadingCard) {
                 loadingCard.innerHTML = `
                     <h2>🤖 AI 포스트를 불러오는 중...</h2>
-                    <p>GitHub에서 최신 포스트를 가져오고 있습니다. 잠시만 기다려주세요.</p>
+                    <p>여러 방법으로 최신 포스트를 가져오고 있습니다. 잠시만 기다려주세요.</p>
                 `;
             }
         }
 
         function showNoAIPosts() {
+            console.log('📭 포스트 없음 표시');
             const postsContainer = document.querySelector('.blog-posts');
             postsContainer.innerHTML = `
                 <div class="post-card no-posts">
@@ -1103,24 +1185,46 @@
         }
 
         function showAIPostError() {
+            console.log('❌ 에러 상태 표시');
             const postsContainer = document.querySelector('.blog-posts');
             postsContainer.innerHTML = `
                 <div class="post-card no-posts">
                     <h2>⚠️ 포스트를 불러올 수 없습니다</h2>
-                    <p>네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>
+                    <p>일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>
                     <div style="text-align: center; margin-top: 2rem;">
                         <button onclick="loadAIPosts()" class="cta-button">다시 시도</button>
+                        <a href="https://github.com/tonyhwang1004/ai-insight-blog/tree/main/posts" target="_blank" class="cta-button secondary" style="margin-left: 1rem;">GitHub에서 직접 보기</a>
                     </div>
                 </div>
             `;
         }
 
+        // 포스트 로딩 완료 처리
+        function finishLoading() {
+            const loadingElement = document.querySelector('.loading');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+            
+            updateSidebarStats();
+            updatePopularTopics();
+            
+            if (allPosts.length === 0) {
+                showNoAIPosts();
+            } else {
+                console.log(`✅ ${allPosts.length}개 포스트 로딩 완료`);
+            }
+        }
+
         // 이벤트 리스너들
         document.addEventListener('DOMContentLoaded', function() {
-            // AI 포스트 로딩 (preloader 완료 후)
+            console.log('🚀 페이지 로드 완료, AI 포스트 로딩 시작');
+            
             setTimeout(() => {
-                loadAIPosts();
-            }, 1500);
+                loadAIPosts().finally(() => {
+                    finishLoading();
+                });
+            }, 2000);
 
             // Google Analytics 이벤트 추적
             document.addEventListener('click', function(e) {
@@ -1130,90 +1234,29 @@
                         const postTitle = postCard.querySelector('.post-title')?.textContent || '알 수 없음';
                         const postCategory = postCard.querySelector('.post-category')?.textContent || '기타';
                         
-                        gtag('event', 'blog_post_click', {
-                            'event_category': 'content',
-                            'event_label': postTitle,
-                            'custom_parameter_1': postCategory,
-                            'value': 1
-                        });
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'blog_post_click', {
+                                'event_category': 'content',
+                                'event_label': postTitle,
+                                'custom_parameter_1': postCategory,
+                                'value': 1
+                            });
+                        }
                     }
-                }
-
-                if (e.target.classList.contains('post-category')) {
-                    gtag('event', 'category_click', {
-                        'event_category': 'navigation',
-                        'event_label': e.target.textContent,
-                        'value': 1
-                    });
-                }
-
-                if (e.target.classList.contains('category-item')) {
-                    const categoryName = e.target.querySelector('span')?.textContent || '기타';
-                    gtag('event', 'sidebar_category_click', {
-                        'event_category': 'navigation',
-                        'event_label': categoryName,
-                        'value': 1
-                    });
-                }
-
-                if (e.target.classList.contains('popular-post')) {
-                    gtag('event', 'popular_post_click', {
-                        'event_category': 'sidebar_interaction',
-                        'event_label': e.target.textContent,
-                        'value': 1
-                    });
                 }
 
                 if (e.target.classList.contains('cta-button')) {
                     const buttonText = e.target.textContent;
-                    const buttonType = e.target.classList.contains('secondary') ? 'secondary' : 'primary';
-                    
-                    gtag('event', 'cta_click', {
-                        'event_category': 'engagement',
-                        'event_label': buttonText,
-                        'custom_parameter_1': buttonType,
-                        'value': 1
-                    });
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'cta_click', {
+                            'event_category': 'engagement',
+                            'event_label': buttonText,
+                            'value': 1
+                        });
+                    }
                 }
             });
-
-            // 스크롤 깊이 추적
-            let maxScroll = 0;
-            let scrollMilestones = [25, 50, 75, 100];
-            let trackedMilestones = [];
-
-            window.addEventListener('scroll', throttle(function() {
-                const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-                
-                if (scrollPercent > maxScroll) {
-                    maxScroll = scrollPercent;
-                    
-                    scrollMilestones.forEach(milestone => {
-                        if (scrollPercent >= milestone && !trackedMilestones.includes(milestone)) {
-                            trackedMilestones.push(milestone);
-                            gtag('event', 'scroll_depth', {
-                                'event_category': 'engagement',
-                                'event_label': `${milestone}%`,
-                                'value': milestone
-                            });
-                        }
-                    });
-                }
-            }, 500));
         });
-
-        // 유틸리티 함수: throttle
-        function throttle(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
 
         // 부드러운 스크롤
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1221,35 +1264,33 @@
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
 
         // 에러 처리
         window.addEventListener('error', function(e) {
-            gtag('event', 'javascript_error', {
-                'event_category': 'error',
-                'event_label': e.message,
-                'value': 1
-            });
+            console.error('JavaScript 오류:', e.message);
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'javascript_error', {
+                    'event_category': 'error',
+                    'event_label': e.message,
+                    'value': 1
+                });
+            }
         });
 
         window.addEventListener('unhandledrejection', function(e) {
-            gtag('event', 'promise_rejection', {
-                'event_category': 'error',
-                'event_label': e.reason,
-                'value': 1
-            });
+            console.error('Promise 거부:', e.reason);
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'promise_rejection', {
+                    'event_category': 'error',
+                    'event_label': String(e.reason),
+                    'value': 1
+                });
+            }
         });
-
-        // 30초마다 새 포스트 확인 (선택사항 - 너무 자주 호출하지 않도록 주석 처리)
-        // setInterval(() => {
-        //     loadAIPosts();
-        // }, 30000);
     </script>
 </body>
 </html>
