@@ -43,7 +43,7 @@ Collecting urllib3<3,>=1.21.1 (from requests)
 Collecting soupsieve>1.2 (from beautifulsoup4)
   Using cached soupsieve-2.7-py3-none-any.whl.metadata (4.6 kB)
 Downloading openai-1.99.6-py3-none-any.whl (786 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 786.3/786.3 kB 21.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 786.3/786.3 kB 64.6 MB/s  0:00:00
 Downloading anyio-4.10.0-py3-none-any.whl (107 kB)
 Using cached distro-1.9.0-py3-none-any.whl (20 kB)
 Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
