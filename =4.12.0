@@ -1,5 +1,5 @@
 Collecting openai
-  Downloading openai-2.35.1-py3-none-any.whl.metadata (31 kB)
+  Downloading openai-2.36.0-py3-none-any.whl.metadata (31 kB)
 Collecting requests
   Downloading requests-2.33.1-py3-none-any.whl.metadata (4.8 kB)
 Collecting beautifulsoup4
@@ -39,11 +39,11 @@ Collecting typing-inspection>=0.4.2 (from pydantic<3,>=1.9.0->openai)
 Collecting charset_normalizer<4,>=2 (from requests)
   Downloading charset_normalizer-3.4.7-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
 Collecting urllib3<3,>=1.26 (from requests)
-  Using cached urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+  Downloading urllib3-2.7.0-py3-none-any.whl.metadata (6.9 kB)
 Collecting soupsieve>=1.6.1 (from beautifulsoup4)
   Using cached soupsieve-2.8.3-py3-none-any.whl.metadata (4.6 kB)
-Downloading openai-2.35.1-py3-none-any.whl (1.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 22.8 MB/s  0:00:00
+Downloading openai-2.36.0-py3-none-any.whl (1.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 19.4 MB/s  0:00:00
 Downloading anyio-4.13.0-py3-none-any.whl (114 kB)
 Using cached distro-1.9.0-py3-none-any.whl (20 kB)
 Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
@@ -51,12 +51,12 @@ Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
 Downloading jiter-0.14.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (358 kB)
 Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
 Downloading pydantic_core-2.46.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 59.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 49.5 MB/s  0:00:00
 Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
 Downloading requests-2.33.1-py3-none-any.whl (64 kB)
 Downloading charset_normalizer-3.4.7-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (216 kB)
 Downloading idna-3.13-py3-none-any.whl (68 kB)
-Using cached urllib3-2.6.3-py3-none-any.whl (131 kB)
+Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
 Using cached beautifulsoup4-4.14.3-py3-none-any.whl (107 kB)
 Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
 Downloading certifi-2026.4.22-py3-none-any.whl (135 kB)
@@ -68,4 +68,4 @@ Using cached typing_inspection-0.4.2-py3-none-any.whl (14 kB)
 Using cached sniffio-1.3.1-py3-none-any.whl (10 kB)
 Installing collected packages: urllib3, typing-extensions, tqdm, soupsieve, sniffio, jiter, idna, h11, distro, charset_normalizer, certifi, annotated-types, typing-inspection, requests, pydantic-core, httpcore, exceptiongroup, beautifulsoup4, pydantic, anyio, httpx, openai
 
-Successfully installed annotated-types-0.7.0 anyio-4.13.0 beautifulsoup4-4.14.3 certifi-2026.4.22 charset_normalizer-3.4.7 distro-1.9.0 exceptiongroup-1.3.1 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.13 jiter-0.14.0 openai-2.35.1 pydantic-2.13.4 pydantic-core-2.46.4 requests-2.33.1 sniffio-1.3.1 soupsieve-2.8.3 tqdm-4.67.3 typing-extensions-4.15.0 typing-inspection-0.4.2 urllib3-2.6.3
+Successfully installed annotated-types-0.7.0 anyio-4.13.0 beautifulsoup4-4.14.3 certifi-2026.4.22 charset_normalizer-3.4.7 distro-1.9.0 exceptiongroup-1.3.1 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.13 jiter-0.14.0 openai-2.36.0 pydantic-2.13.4 pydantic-core-2.46.4 requests-2.33.1 sniffio-1.3.1 soupsieve-2.8.3 tqdm-4.67.3 typing-extensions-4.15.0 typing-inspection-0.4.2 urllib3-2.7.0
