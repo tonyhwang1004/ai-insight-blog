@@ -45,7 +45,7 @@ Collecting certifi>=2023.5.7 (from requests)
 Collecting soupsieve>=1.6.1 (from beautifulsoup4)
   Downloading soupsieve-2.9.2-py3-none-any.whl.metadata (4.6 kB)
 Downloading openai-3.0.0-py3-none-any.whl (1.7 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 14.8 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 19.9 MB/s  0:00:00
 Downloading anyio-4.14.2-py3-none-any.whl (125 kB)
 Using cached distro-1.9.0-py3-none-any.whl (20 kB)
 Downloading httpx2-2.10.0-py3-none-any.whl (94 kB)
@@ -53,7 +53,7 @@ Downloading httpcore2-2.10.0-py3-none-any.whl (83 kB)
 Downloading jiter-0.16.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (348 kB)
 Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
 Downloading pydantic_core-2.46.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 7.8 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 40.6 MB/s  0:00:00
 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
 Downloading requests-2.34.2-py3-none-any.whl (73 kB)
 Downloading charset_normalizer-3.5.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (261 kB)
