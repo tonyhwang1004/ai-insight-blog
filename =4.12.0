@@ -41,14 +41,14 @@ Collecting certifi>=2023.5.7 (from requests)
 Collecting soupsieve>=1.6.1 (from beautifulsoup4)
   Using cached soupsieve-2.9.2-py3-none-any.whl.metadata (4.6 kB)
 Downloading openai-3.6.0-py3-none-any.whl (1.7 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 151.0 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 13.5 MB/s  0:00:00
 Using cached anyio-4.14.2-py3-none-any.whl (125 kB)
 Using cached httpx2-2.12.0-py3-none-any.whl (95 kB)
 Using cached httpcore2-2.12.0-py3-none-any.whl (83 kB)
 Using cached jiter-0.16.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (348 kB)
 Downloading pydantic-2.13.5-py3-none-any.whl (472 kB)
 Downloading pydantic_core-2.46.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 250.7 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 25.3 MB/s  0:00:00
 Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
 Using cached requests-2.34.2-py3-none-any.whl (73 kB)
 Using cached charset_normalizer-3.5.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (261 kB)
